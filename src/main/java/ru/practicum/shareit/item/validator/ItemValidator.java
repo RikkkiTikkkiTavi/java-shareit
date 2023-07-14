@@ -7,10 +7,10 @@ import ru.practicum.shareit.user.model.User;
 
 public class ItemValidator {
 
-   public static void checkOwner(Item item, long ownerId) {
-       if (!(item.getOwner().getId() == ownerId)) {
-           throw new ItemNotFoundException("Редактировать данные вещи может только ее владелец");
-       }
+    public static void checkOwner(Item item, long ownerId) {
+        if (!(item.getOwner().getId() == ownerId)) {
+            throw new ItemNotFoundException("Редактировать данные вещи может только ее владелец");
+        }
     }
 
     public static void checkExistenceItem(Item item) {
@@ -18,6 +18,7 @@ public class ItemValidator {
             throw new ItemNotFoundException("Вещь c данным id не зарегистрирована");
         }
     }
+
     public static void checkExistenceUser(User user) {
         if (user == null) {
             throw new ItemNotFoundException("Пользователь с данным id не зарегистрирован");

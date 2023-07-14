@@ -51,11 +51,12 @@ public class ItemServiceImpl implements ItemService {
     }
 
     public List<ItemDto> getUserItems(long userId) {
-        return itemStorage.getAll().
-                stream().
-                filter(item -> item.getOwner().getId() == userId).
-                map(ItemMapper::toItemDto).
-                collect(Collectors.toList());
+        return itemStorage
+                .getAll()
+                .stream()
+                .filter(item -> item.getOwner().getId() == userId)
+                .map(ItemMapper::toItemDto)
+                .collect(Collectors.toList());
     }
 
     public List<ItemDto> searchItems(String text) {
