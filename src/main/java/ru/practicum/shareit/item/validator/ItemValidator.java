@@ -8,7 +8,7 @@ import ru.practicum.shareit.user.model.User;
 public class ItemValidator {
 
     public static void checkOwner(Item item, long ownerId) {
-        if (!(item.getOwner().getId() == ownerId)) {
+        if (item.getOwner().getId() != ownerId) {
             throw new ItemNotFoundException("Редактировать данные вещи может только ее владелец");
         }
     }
