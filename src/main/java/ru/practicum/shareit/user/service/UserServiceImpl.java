@@ -15,7 +15,7 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 public class UserServiceImpl implements UserService {
 
-    UserStorage storage;
+    private final UserStorage storage;
 
     @Override
     public List<UserDto> findAll() {

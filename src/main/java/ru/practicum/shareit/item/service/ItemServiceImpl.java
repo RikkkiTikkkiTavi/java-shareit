@@ -17,8 +17,8 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 public class ItemServiceImpl implements ItemService {
 
-    ItemStorage itemStorage;
-    UserStorage userStorage;
+    private final ItemStorage itemStorage;
+    private final UserStorage userStorage;
 
     public ItemDto addNewItem(long userId, Item item) {
         ItemValidator.checkItem(item);
