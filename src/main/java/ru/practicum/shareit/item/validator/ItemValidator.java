@@ -5,23 +5,13 @@ import ru.practicum.shareit.item.exception.ItemValidationException;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.user.model.User;
 
+import java.util.Optional;
+
 public class ItemValidator {
 
     public static void checkOwner(Item item, long ownerId) {
-        if (item.getOwner().getId() != ownerId) {
+        if (item.getOwnerId() != ownerId) {
             throw new ItemNotFoundException("Редактировать данные вещи может только ее владелец");
-        }
-    }
-
-    public static void checkExistenceItem(Item item) {
-        if (item == null) {
-            throw new ItemNotFoundException("Вещь c данным id не зарегистрирована");
-        }
-    }
-
-    public static void checkExistenceUser(User user) {
-        if (user == null) {
-            throw new ItemNotFoundException("Пользователь с данным id не зарегистрирован");
         }
     }
 
