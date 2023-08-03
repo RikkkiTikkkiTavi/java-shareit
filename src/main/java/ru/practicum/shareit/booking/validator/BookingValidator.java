@@ -32,8 +32,8 @@ public class BookingValidator {
         }
     }
 
-    public static void validateUserId (long userId, Booking booking) {
-        if(booking.getBooker().getId() != userId && booking.getItem().getOwner().getId() != userId) {
+    public static void validateUserId(long userId, Booking booking) {
+        if (booking.getBooker().getId() != userId && booking.getItem().getOwner().getId() != userId) {
             throw new UserNotFoundException("Вы не автор бронирования и не владелец вещи");
         }
     }
