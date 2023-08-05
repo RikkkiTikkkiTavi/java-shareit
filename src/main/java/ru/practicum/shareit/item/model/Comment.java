@@ -20,7 +20,7 @@ public class Comment {
     private long id;
 
     @Column(name = "text")
-    String text;
+    private String text;
 
     @ManyToOne
     @JoinColumn(name = "author_id")
@@ -31,5 +31,5 @@ public class Comment {
     private Item item;
 
     @Column(name = "created")
-    LocalDateTime created;
+    private LocalDateTime created;
 }
