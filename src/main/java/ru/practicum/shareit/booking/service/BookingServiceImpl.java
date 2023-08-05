@@ -100,8 +100,9 @@ public class BookingServiceImpl implements BookingService {
             case REJECTED:
                 return BookingMapper.toBookingsResponseDto(bookingRepository
                         .findAllByBooker_IdAndStatusEquals(bookerId, Status.REJECTED));
+            default:
+                throw new UnsupportedStateException("Unknown state: " + state);
         }
-        return null;
     }
 
     public List<BookingResponseDto> getBookingsByOwner(long ownerId, String state) {
@@ -127,8 +128,9 @@ public class BookingServiceImpl implements BookingService {
             case REJECTED:
                 return BookingMapper.toBookingsResponseDto(bookingRepository
                         .findAllByItem_Owner_IdAndStatusEquals(ownerId, Status.REJECTED));
+            default:
+                throw new UnsupportedStateException("Unknown state: " + state);
         }
-        return null;
     }
 
     private State toState(String state) {
