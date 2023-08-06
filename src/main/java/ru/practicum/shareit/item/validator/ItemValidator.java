@@ -1,9 +1,14 @@
 package ru.practicum.shareit.item.validator;
 
+import ru.practicum.shareit.booking.model.Booking;
+import ru.practicum.shareit.booking.model.Status;
+import ru.practicum.shareit.item.dto.CommentDto;
 import ru.practicum.shareit.item.exception.ItemNotFoundException;
 import ru.practicum.shareit.item.exception.ItemValidationException;
 import ru.practicum.shareit.item.model.Item;
-import ru.practicum.shareit.user.model.User;
+import ru.practicum.shareit.item.repository.ItemRepository;
+
+import java.time.LocalDateTime;
 
 public class ItemValidator {
 
@@ -13,15 +18,11 @@ public class ItemValidator {
         }
     }
 
-    public static void checkExistenceItem(Item item) {
-        if (item == null) {
-            throw new ItemNotFoundException("Вещь c данным id не зарегистрирована");
-        }
-    }
-
-    public static void checkExistenceUser(User user) {
-        if (user == null) {
-            throw new ItemNotFoundException("Пользователь с данным id не зарегистрирован");
+    public static void checkAvailable(ItemRepository itemRepository, long itemId) {
+        Item item = itemRepository.findById(itemId)
+                .orElseThrow(() -> new ItemNotFoundException("Предмет не существует"));
+        if (!item.getAvailable()) {
+            throw new ItemValidationException("Предмет не доступен");
         }
     }
 
@@ -34,6 +35,19 @@ public class ItemValidator {
         }
         if (item.getDescription() == null || item.getDescription().isEmpty()) {
             throw new ItemValidationException("У предмета должно описание");
+        }
+    }
+
+    public static void checkComment(CommentDto commentDto, Booking booking) {
+        if (commentDto.getText().isEmpty()) {
+            throw new ItemValidationException("Комментарий не может быть пустым");
+        }
+        if (booking == null) {
+            throw new ItemValidationException("Пользователь не арендовал предмет");
+        } else if (booking.getStatus().equals(Status.REJECTED)) {
+            throw new ItemValidationException("Пользователь не арендовал предмет");
+        } else if (booking.getEnd().isAfter(LocalDateTime.now())) {
+            throw new ItemValidationException("Пользователь еще не завершил аренду");
         }
     }
 }
