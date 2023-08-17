@@ -7,7 +7,6 @@ import ru.practicum.shareit.request.model.ItemRequest;
 import ru.practicum.shareit.user.model.User;
 
 import java.time.LocalDateTime;
-import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -38,6 +37,6 @@ public class ItemMapper {
 
     public static Comment toComment(CommentDto commentDto, Item item, User author) {
         return new Comment(commentDto.getId(), commentDto.getText(), author, item, LocalDateTime.now()
-                .truncatedTo(ChronoUnit.NANOS));
+                .withNano(123456789));
     }
 }
