@@ -37,4 +37,10 @@ public class BookingValidator {
             throw new UserNotFoundException("Вы не автор бронирования и не владелец вещи");
         }
     }
+
+    public static void checkFromAndSize(long from, long size) {
+        if (from < 0 || size <= 0) {
+            throw new BookingValidateException("Размер не может быть отрицательным");
+        }
+    }
 }

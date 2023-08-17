@@ -17,6 +17,8 @@ import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.repository.CommentRepository;
 import ru.practicum.shareit.item.repository.ItemRepository;
 import ru.practicum.shareit.item.validator.ItemValidator;
+import ru.practicum.shareit.request.model.ItemRequest;
+import ru.practicum.shareit.request.repository.RequestRepository;
 import ru.practicum.shareit.user.exception.UserNotFoundException;
 import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.repository.UserRepository;
@@ -37,17 +39,24 @@ public class ItemServiceImpl implements ItemService {
     private final ItemRepository itemRepository;
     private final BookingRepository bookingRepository;
     private final CommentRepository commentRepository;
+    private final RequestRepository requestRepository;
 
     @Transactional
-    public ItemDto addNewItem(long userId, Item item) {
-        ItemValidator.checkItem(item);
-        item.setOwner(userRepository.findById(userId)
-                .orElseThrow(() -> new ItemNotFoundException("Пользователь с данным id не зарегистрирован")));
+    public ItemDto addNewItem(long userId, ItemDto itemDto) {
+        ItemValidator.checkItem(itemDto);
+        User owner = userRepository.findById(userId)
+                .orElseThrow(() -> new ItemNotFoundException("Пользователь с данным id не зарегистрирован"));
+        ItemRequest itemRequest = null;
+        if (itemDto.getRequestId() != 0) {
+            itemRequest = requestRepository.findById(itemDto.getRequestId())
+                    .orElseThrow(() -> new ItemNotFoundException("Такого запроса не существует"));
+        }
+        Item item = ItemMapper.toItem(itemDto, owner, itemRequest);
         return ItemMapper.toItemDto(itemRepository.save(item));
     }
 
     @Transactional
-    public ItemDto editItem(long userId, long itemId, Item item) {
+    public ItemDto editItem(long userId, long itemId, ItemDto item) {
         Item oldItem = itemRepository.findById(itemId).orElseThrow();
         ItemValidator.checkOwner(oldItem, userId);
         if (item.getName() != null) {

@@ -1,6 +1,7 @@
 package ru.practicum.shareit.booking.service;
 
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.shareit.booking.dto.BookingRequestDto;
@@ -15,9 +16,9 @@ import ru.practicum.shareit.booking.model.Status;
 import ru.practicum.shareit.booking.repository.BookingRepository;
 import ru.practicum.shareit.booking.validator.BookingValidator;
 import ru.practicum.shareit.item.exception.ItemNotFoundException;
+import ru.practicum.shareit.item.exception.ItemValidationException;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.repository.ItemRepository;
-import ru.practicum.shareit.item.validator.ItemValidator;
 import ru.practicum.shareit.user.exception.UserNotFoundException;
 import ru.practicum.shareit.user.repository.UserRepository;
 
@@ -44,10 +45,12 @@ public class BookingServiceImpl implements BookingService {
 
     @Transactional
     public BookingResponseDto addBooking(long userId, BookingRequestDto bookingRequestDto) {
-        ItemValidator.checkAvailable(itemRepository, bookingRequestDto.getItemId());
         BookingValidator.checkTime(bookingRequestDto);
         Item item = itemRepository.findById(bookingRequestDto.getItemId())
                 .orElseThrow(() -> new ItemNotFoundException("Предмет не найден"));
+        if (!item.getAvailable()) {
+            throw new ItemValidationException("Предмет не доступен");
+        }
         if (item.getOwner().getId() == userId) {
             throw new UserNotFoundException("Вещь не может забронировать её владелец");
         }
@@ -77,13 +80,19 @@ public class BookingServiceImpl implements BookingService {
         return BookingMapper.toBookingResponseDto(booking);
     }
 
-    public List<BookingResponseDto> getBookingsByBooker(long bookerId, String state) {
+    public List<BookingResponseDto> getBookingsByBooker(long bookerId, String state, int from, int size) {
         userRepository.findById(bookerId).orElseThrow(() -> new UserNotFoundException("Пользователь не найден"));
 
         switch (toState(state)) {
             case ALL:
+                BookingValidator.checkFromAndSize(from, size);
+                long count = bookingRepository.countByBooker_Id(bookerId);
+                if (size > count - from) {
+                    size = (int) (count - from);
+                }
+                PageRequest pageRequest = PageRequest.of(from, size);
                 return BookingMapper.toBookingsResponseDto(bookingRepository
-                        .findAllByBooker_IdOrderByStartDesc(bookerId));
+                        .findAllByBooker_IdOrderByStartDesc(bookerId, pageRequest));
             case CURRENT:
                 return BookingMapper.toBookingsResponseDto(bookingRepository
                         .findAllByBooker_IdAndStartIsBeforeAndEndIsAfterOrderByStartDesc(bookerId, LocalDateTime.now(),
@@ -105,13 +114,19 @@ public class BookingServiceImpl implements BookingService {
         }
     }
 
-    public List<BookingResponseDto> getBookingsByOwner(long ownerId, String state) {
+    public List<BookingResponseDto> getBookingsByOwner(long ownerId, String state, int from, int size) {
         userRepository.findById(ownerId).orElseThrow(() -> new UserNotFoundException("Пользователь не найден"));
 
         switch (toState(state)) {
             case ALL:
+                BookingValidator.checkFromAndSize(from, size);
+                long count = bookingRepository.countByItem_Owner_Id(ownerId);
+                if (size > count - from) {
+                    size = (int) (count - from);
+                }
+                PageRequest pageRequest = PageRequest.of(from, size);
                 return BookingMapper.toBookingsResponseDto(bookingRepository
-                        .findAllByItem_Owner_IdOrderByStartDesc(ownerId));
+                        .findAllByItem_Owner_IdOrderByStartDesc(ownerId, pageRequest));
             case CURRENT:
                 return BookingMapper.toBookingsResponseDto(bookingRepository
                         .findAllByItem_Owner_IdAndStartIsBeforeAndEndIsAfterOrderByStartDesc(ownerId,
