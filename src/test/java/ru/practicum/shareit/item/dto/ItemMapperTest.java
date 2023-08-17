@@ -43,11 +43,11 @@ class ItemMapperTest {
         owner = new User(1, "1", "1");
         author = new User(2, "2", "2");
         User requestor = new User(3, "2", "2");
-        request = new ItemRequest(1, "desc", requestor, LocalDateTime.now());
+        request = new ItemRequest(1, "desc", requestor, LocalDateTime.now().withNano(123456789));
         item = new Item(1, owner, "itemOne", "DescOne", true, request);
-        comment = new Comment(1, "text", author, item, LocalDateTime.now().withNano(0));
+        comment = new Comment(1, "text", author, item, LocalDateTime.now().withNano(123456789));
         itemDto = new ItemDto(1, "itemOne", "DescOne", true, 1);
-        commentDto = new CommentDto(1, "2", "text", LocalDateTime.now().withNano(0));
+        commentDto = new CommentDto(1, "2", "text", LocalDateTime.now().withNano(123456789));
         itemBookingDto = new ItemBookingDto(1, "itemOne", "DescOne", true, lastBooking, nextBooking,
                 List.of(commentDto));
 
