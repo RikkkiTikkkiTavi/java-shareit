@@ -7,6 +7,7 @@ import ru.practicum.shareit.request.model.ItemRequest;
 import ru.practicum.shareit.user.model.User;
 
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -24,14 +25,11 @@ public class ItemMapper {
     }
 
     public static Item toItem(ItemDto itemDto, User owner, ItemRequest itemRequest) {
-        return new Item(itemDto.getId(), owner, itemDto.getName(), itemDto.getDescription(), itemDto.getAvailable(),
-                itemRequest);
+        return new Item(itemDto.getId(), owner, itemDto.getName(), itemDto.getDescription(), itemDto.getAvailable(), itemRequest);
     }
 
-    public static ItemBookingDto toItemBookingDto(Item item, BookingResponseDto lastBooking,
-                                                  BookingResponseDto nextBooking, List<CommentDto> comments) {
-        return new ItemBookingDto(item.getId(), item.getName(), item.getDescription(), item.getAvailable(),
-                lastBooking, nextBooking, comments);
+    public static ItemBookingDto toItemBookingDto(Item item, BookingResponseDto lastBooking, BookingResponseDto nextBooking, List<CommentDto> comments) {
+        return new ItemBookingDto(item.getId(), item.getName(), item.getDescription(), item.getAvailable(), lastBooking, nextBooking, comments);
     }
 
     public static CommentDto toCommentDto(Comment comment) {
@@ -39,6 +37,7 @@ public class ItemMapper {
     }
 
     public static Comment toComment(CommentDto commentDto, Item item, User author) {
-        return new Comment(commentDto.getId(), commentDto.getText(), author, item, LocalDateTime.now().withNano(0));
+        return new Comment(commentDto.getId(), commentDto.getText(), author, item, LocalDateTime.now()
+                .truncatedTo(ChronoUnit.MILLIS));
     }
 }
