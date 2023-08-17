@@ -42,8 +42,7 @@ public class RequestServiceImpl implements RequestService {
     public List<ItemRequestDto> getOwnerRequests(long userId) {
         userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException("Пользователь не найден"));
         List<ItemRequest> requests = requestRepository.findByRequestor_Id(userId);
-        return requests.stream().map((req) ->
-        {
+        return requests.stream().map((req) -> {
             ItemRequestDto requestDto = ItemRequestMapper.toItemRequestDto(req);
             requestDto.setItems(ItemMapper.toItemsDto(itemRepository.findByItemRequest_Id(req.getId())));
             return requestDto;
@@ -54,14 +53,13 @@ public class RequestServiceImpl implements RequestService {
         RequestValidator.checkFromAndSize(from, size);
         PageRequest request = PageRequest.of(from, size, Sort.by(Sort.Direction.DESC, "created"));
         Page<ItemRequest> page = requestRepository.findByRequestor_IdNot(userId, request);
-        return page.stream().map((req) ->
-        {
+        return page.stream().map((req) -> {
             ItemRequestDto requestDto = ItemRequestMapper.toItemRequestDto(req);
             requestDto.setItems(ItemMapper.toItemsDto(itemRepository.findByItemRequest_Id(req.getId())));
             return requestDto;
         }).collect(Collectors.toList());
     }
-    
+
     public ItemRequestDto findById(long userId, long requestId) {
         userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException("Пользователь не найден"));
         List<ItemDto> items = ItemMapper.toItemsDto(itemRepository.findByItemRequest_Id(requestId));
