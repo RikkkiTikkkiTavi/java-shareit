@@ -9,7 +9,6 @@ import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.dto.ItemMapper;
 import ru.practicum.shareit.item.exception.ItemNotFoundException;
-
 import ru.practicum.shareit.item.repository.ItemRepository;
 import ru.practicum.shareit.request.dto.ItemRequestDto;
 import ru.practicum.shareit.request.dto.ItemRequestMapper;
@@ -40,7 +39,6 @@ public class RequestServiceImpl implements RequestService {
         return ItemRequestMapper.toItemRequestDto(requestRepository.save(ItemRequestMapper.toItemRequest(itemRequestDto)));
     }
 
-
     public List<ItemRequestDto> getOwnerRequests(long userId) {
         userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException("Пользователь не найден"));
         List<ItemRequest> requests = requestRepository.findByRequestor_Id(userId);
@@ -63,8 +61,7 @@ public class RequestServiceImpl implements RequestService {
             return requestDto;
         }).collect(Collectors.toList());
     }
-
-
+    
     public ItemRequestDto findById(long userId, long requestId) {
         userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException("Пользователь не найден"));
         List<ItemDto> items = ItemMapper.toItemsDto(itemRepository.findByItemRequest_Id(requestId));

@@ -3,7 +3,6 @@ package ru.practicum.shareit.user.validator;
 import lombok.AllArgsConstructor;
 import ru.practicum.shareit.user.dto.UserDto;
 import ru.practicum.shareit.user.exception.UserValidationException;
-import ru.practicum.shareit.user.model.User;
 
 @AllArgsConstructor
 public class UserValidator {

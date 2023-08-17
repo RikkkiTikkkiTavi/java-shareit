@@ -128,18 +128,18 @@ class ItemServiceImplTest {
 
     @Test
     void getItemReturnItemBookingDto() {
-        LinkedList<Booking> OneList = new LinkedList<>();
-        OneList.add(bookingOne);
-        LinkedList<Booking> TwoList = new LinkedList<>();
-        TwoList.add(bookingTwo);
+        LinkedList<Booking> oneList = new LinkedList<>();
+        oneList.add(bookingOne);
+        LinkedList<Booking> twoList = new LinkedList<>();
+        twoList.add(bookingTwo);
 
         when(itemRepository.findById(anyLong())).thenReturn(Optional.of(itemOne));
         when(bookingRepository
                 .findAllByItemAndStartIsBeforeAndStatusEqualsOrderByStart(any(Item.class), any(LocalDateTime.class),
-                        any(Status.class))).thenReturn(OneList);
+                        any(Status.class))).thenReturn(oneList);
         when(bookingRepository
                 .findAllByItemAndStartIsAfterAndStatusEqualsOrderByStart(any(Item.class), any(LocalDateTime.class),
-                        any(Status.class))).thenReturn(TwoList);
+                        any(Status.class))).thenReturn(twoList);
         when(commentRepository.findAllByItem(any(Item.class))).thenReturn(List.of(comment));
         CommentDto commentDto = ItemMapper.toCommentDto(comment);
         ItemBookingDto itemBookingDto = new ItemBookingDto(itemOne.getId(), itemOne.getName(), itemOne.getDescription(),
