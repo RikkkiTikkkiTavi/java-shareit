@@ -11,7 +11,7 @@ import ru.practicum.shareit.user.model.User;
 import java.time.LocalDateTime;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class ItemMapperTest {
 
@@ -45,9 +45,9 @@ class ItemMapperTest {
         User requestor = new User(3, "2", "2");
         request = new ItemRequest(1, "desc", requestor, LocalDateTime.now());
         item = new Item(1, owner, "itemOne", "DescOne", true, request);
-        comment = new Comment(1, "text", author, item, LocalDateTime.now());
+        comment = new Comment(1, "text", author, item, LocalDateTime.now().withNano(0));
         itemDto = new ItemDto(1, "itemOne", "DescOne", true, 1);
-        commentDto = new CommentDto(1, "2", "text", LocalDateTime.now());
+        commentDto = new CommentDto(1, "2", "text", LocalDateTime.now().withNano(0));
         itemBookingDto = new ItemBookingDto(1, "itemOne", "DescOne", true, lastBooking, nextBooking,
                 List.of(commentDto));
 
