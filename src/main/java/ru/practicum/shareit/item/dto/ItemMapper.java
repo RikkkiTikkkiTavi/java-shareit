@@ -38,6 +38,6 @@ public class ItemMapper {
 
     public static Comment toComment(CommentDto commentDto, Item item, User author) {
         return new Comment(commentDto.getId(), commentDto.getText(), author, item, LocalDateTime.now()
-                .truncatedTo(ChronoUnit.MILLIS));
+                .truncatedTo(ChronoUnit.NANOS));
     }
 }
