@@ -3,12 +3,14 @@ package ru.practicum.shareit.item.dto;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import ru.practicum.shareit.booking.dto.BookingResponseDto;
+import ru.practicum.shareit.booking.model.Status;
 import ru.practicum.shareit.item.model.Comment;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.request.model.ItemRequest;
 import ru.practicum.shareit.user.model.User;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -38,19 +40,20 @@ class ItemMapperTest {
 
     @BeforeEach
     void setUp() {
-        lastBooking = new BookingResponseDto();
-        nextBooking = new BookingResponseDto();
         owner = new User(1, "1", "1");
         author = new User(2, "2", "2");
         User requestor = new User(3, "2", "2");
-        request = new ItemRequest(1, "desc", requestor, LocalDateTime.now().withNano(123456789));
+        request = new ItemRequest(1, "desc", requestor, LocalDateTime.now().withNano(123456789), new ArrayList<>());
         item = new Item(1, owner, "itemOne", "DescOne", true, request);
         comment = new Comment(1, "text", author, item, LocalDateTime.now().withNano(123456789));
         itemDto = new ItemDto(1, "itemOne", "DescOne", true, 1);
         commentDto = new CommentDto(1, "2", "text", LocalDateTime.now().withNano(123456789));
+        lastBooking = new BookingResponseDto(1, 1, LocalDateTime.now().minusHours(1), LocalDateTime.now(),
+                item, author, Status.APPROVED);
+        nextBooking = new BookingResponseDto(2, 1, LocalDateTime.now().minusHours(1), LocalDateTime.now(),
+                item, author, Status.APPROVED);
         itemBookingDto = new ItemBookingDto(1, "itemOne", "DescOne", true, lastBooking, nextBooking,
                 List.of(commentDto));
-
     }
 
     @Test

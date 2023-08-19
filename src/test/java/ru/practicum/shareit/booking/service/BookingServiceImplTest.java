@@ -30,9 +30,10 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -133,11 +134,15 @@ class BookingServiceImplTest {
     void approveBookingReturnBookingDtoWithStatusApprove() {
         when(userRepository.findById(anyLong())).thenReturn(Optional.ofNullable(booker));
         when(bookingRepository.findById(anyLong())).thenReturn(Optional.ofNullable(bookingOne));
-        BookingResponseDto expectedBooking = BookingMapper.toBookingResponseDto(bookingOne);
-        expectedBooking.setStatus(Status.REJECTED);
-        assertEquals(expectedBooking, bookingService.approveBooking(1, 1, false));
-        expectedBooking.setStatus(Status.APPROVED);
-        assertEquals(expectedBooking, bookingService.approveBooking(1, 1, true));
+        BookingResponseDto rejectedBooking = new BookingResponseDto(1, 3, LocalDateTime.of(2030, 1, 1, 1, 1, 1),
+                LocalDateTime.of(2030, 1, 1, 1, 1, 10), itemOne, booker,
+                Status.REJECTED);
+        assertEquals(rejectedBooking, bookingService.approveBooking(1, 1, false));
+
+        BookingResponseDto approvedBooking = new BookingResponseDto(1, 3, LocalDateTime.of(2030, 1, 1, 1, 1, 1),
+                LocalDateTime.of(2030, 1, 1, 1, 1, 10), itemOne, booker,
+                Status.APPROVED);
+        assertEquals(approvedBooking, bookingService.approveBooking(1, 1, true));
     }
 
     @Test

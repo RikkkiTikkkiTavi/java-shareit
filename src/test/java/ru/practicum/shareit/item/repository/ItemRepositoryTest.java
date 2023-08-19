@@ -6,14 +6,10 @@ import org.junit.jupiter.api.TestInstance;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.test.annotation.DirtiesContext;
-import ru.practicum.shareit.booking.repository.BookingRepository;
 import ru.practicum.shareit.item.model.Item;
-import ru.practicum.shareit.request.model.ItemRequest;
-import ru.practicum.shareit.request.repository.RequestRepository;
 import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.repository.UserRepository;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -29,12 +25,6 @@ class ItemRepositoryTest {
     @Autowired
     private ItemRepository itemRepository;
 
-    @Autowired
-    private BookingRepository bookingRepository;
-
-    @Autowired
-    private RequestRepository requestRepository;
-
     private Item itemOne;
     private Item itemTwo;
 
@@ -49,10 +39,7 @@ class ItemRepositoryTest {
         User booker = new User(0, "userTwo", "email@Two.com");
         userRepository.save(booker);
 
-        ItemRequest itemRequest = new ItemRequest(1, "desc", secondOwner, LocalDateTime.now().withNano(0));
-        requestRepository.save(itemRequest);
-
-        itemOne = new Item(0, owner, "Item1", "Desc1", true, itemRequest);
+        itemOne = new Item(0, owner, "Item1", "Desc1", true, null);
         itemRepository.save(itemOne);
 
         itemTwo = new Item(0, secondOwner, "Item2", "Desc2", true, null);
@@ -63,17 +50,12 @@ class ItemRepositoryTest {
     @Test
     void findByNameOrDescriptionContainingIgnoreCase() {
         assertEquals(List.of(itemOne, itemTwo),
-                itemRepository.findByNameOrDescriptionContainingIgnoreCase("Item1", "Desc2"));
+                itemRepository.findByNameOrDescriptionContainingIgnoreCaseOrderById("Item1", "Desc2"));
     }
 
     @Test
     void findByOwner_Id() {
         assertEquals(List.of(itemOne), itemRepository.findByOwner_Id(1));
         assertEquals(List.of(itemTwo), itemRepository.findByOwner_Id(2));
-    }
-
-    @Test
-    void findByItemRequest_Id() {
-        assertEquals(List.of(itemOne), itemRepository.findByItemRequest_Id(1));
     }
 }

@@ -74,7 +74,7 @@ class ItemServiceImplTest {
     void setUp() {
         owner = new User(1, "userOne", "email@One.com");
         User booker = new User(2, "userTwo", "email@Two.com");
-        itemRequest = new ItemRequest(1, "desc", booker, LocalDateTime.now().withNano(0));
+        itemRequest = new ItemRequest(1, "desc", booker, LocalDateTime.now().withNano(0), null);
         itemOne = new Item(1, owner, "Item1", "Desc1", true, itemRequest);
         itemDto = new ItemDto(1, "Item1", "Desc1", true, 1);
         itemDtoTwo = new ItemDto(2, "Item2", "Desc2", true, 0);
@@ -98,8 +98,8 @@ class ItemServiceImplTest {
     @Test
     void addNewItemThrowExceptionIfRequestNotExist() {
         when(requestRepository.findById(anyLong())).thenThrow(new ItemNotFoundException("Запроса не существует"));
-        itemDto.setRequestId(100);
-        assertThrows(ItemNotFoundException.class, () -> itemService.addNewItem(5, itemDto));
+        ItemDto dto = new ItemDto(100, "Item1", "Desc1", true, 1);
+        assertThrows(ItemNotFoundException.class, () -> itemService.addNewItem(5, dto));
     }
 
     @Test
@@ -155,7 +155,7 @@ class ItemServiceImplTest {
 
     @Test
     void searchItemsReturnListOfItemDto() {
-        when(itemRepository.findByNameOrDescriptionContainingIgnoreCase(anyString(), anyString()))
+        when(itemRepository.findByNameOrDescriptionContainingIgnoreCaseOrderById(anyString(), anyString()))
                 .thenReturn(List.of(itemOne));
         assertEquals(List.of(itemDto), itemService.searchItems("text"));
         assertEquals(new ArrayList<>(), itemService.searchItems(""));

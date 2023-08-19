@@ -8,19 +8,20 @@ import ru.practicum.shareit.user.model.User;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class ItemRequestMapperTest {
 
     private ItemRequestDto itemRequestDto;
     private ItemRequest itemRequest;
 
+    private User requestor;
 
     @BeforeEach
     void setUp() {
-        User requestor = new User();
+        requestor = new User();
         itemRequestDto = new ItemRequestDto(1, "desc", requestor, LocalDateTime.now().withNano(0), new ArrayList<>());
-        itemRequest = new ItemRequest(1, "desc", requestor, LocalDateTime.now().withNano(0));
+        itemRequest = new ItemRequest(1, "desc", requestor, LocalDateTime.now().withNano(0), new ArrayList<>());
     }
 
     @Test
@@ -30,6 +31,6 @@ class ItemRequestMapperTest {
 
     @Test
     void toItemRequest() {
-        assertEquals(itemRequest, ItemRequestMapper.toItemRequest(itemRequestDto));
+        assertEquals(itemRequest, ItemRequestMapper.toItemRequest(itemRequestDto, requestor));
     }
 }

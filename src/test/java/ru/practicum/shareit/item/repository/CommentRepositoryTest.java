@@ -1,7 +1,8 @@
 package ru.practicum.shareit.item.repository;
 
-import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.test.annotation.DirtiesContext;
@@ -17,6 +18,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @DataJpaTest
 @DirtiesContext
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class CommentRepositoryTest {
 
     @Autowired
@@ -33,7 +35,7 @@ class CommentRepositoryTest {
 
     Comment commentTwo;
 
-    @BeforeEach
+    @BeforeAll
     void setUp() {
         User owner = new User(1, "", "");
         userRepository.save(owner);

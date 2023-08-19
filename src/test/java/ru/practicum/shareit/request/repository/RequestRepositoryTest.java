@@ -7,15 +7,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.test.annotation.DirtiesContext;
-import ru.practicum.shareit.item.repository.ItemRepository;
 import ru.practicum.shareit.request.model.ItemRequest;
 import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.repository.UserRepository;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 
 @DataJpaTest
@@ -29,9 +29,6 @@ class RequestRepositoryTest {
     @Autowired
     private RequestRepository requestRepository;
 
-    @Autowired
-    private ItemRepository itemRepository;
-
     private ItemRequest itemRequest;
 
     private ItemRequest itemRequestTwo;
@@ -42,8 +39,8 @@ class RequestRepositoryTest {
         userRepository.save(user);
         User userTwo = new User(2, "g", "e");
         userRepository.save(userTwo);
-        itemRequest = new ItemRequest(1, "desc", user, LocalDateTime.now().withNano(0));
-        itemRequestTwo = new ItemRequest(2, "desc", userTwo, LocalDateTime.now().withNano(0));
+        itemRequest = new ItemRequest(1, "desc", user, LocalDateTime.now().withNano(0), new ArrayList<>());
+        itemRequestTwo = new ItemRequest(2, "desc", userTwo, LocalDateTime.now().withNano(0), new ArrayList<>());
         requestRepository.save(itemRequest);
         requestRepository.save(itemRequestTwo);
     }
