@@ -89,7 +89,7 @@ public class ItemServiceImpl implements ItemService {
         if (text.isEmpty()) {
             return new ArrayList<>();
         }
-        return itemRepository.findByNameOrDescriptionContainingIgnoreCase(text, text)
+        return itemRepository.findByNameOrDescriptionContainingIgnoreCaseOrderById(text, text)
                 .stream()
                 .filter(Item::getAvailable)
                 .map(ItemMapper::toItemDto)

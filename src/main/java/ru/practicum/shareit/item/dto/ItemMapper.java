@@ -24,11 +24,14 @@ public class ItemMapper {
     }
 
     public static Item toItem(ItemDto itemDto, User owner, ItemRequest itemRequest) {
-        return new Item(itemDto.getId(), owner, itemDto.getName(), itemDto.getDescription(), itemDto.getAvailable(), itemRequest);
+        return new Item(itemDto.getId(), owner, itemDto.getName(), itemDto.getDescription(), itemDto.getAvailable(),
+                itemRequest);
     }
 
-    public static ItemBookingDto toItemBookingDto(Item item, BookingResponseDto lastBooking, BookingResponseDto nextBooking, List<CommentDto> comments) {
-        return new ItemBookingDto(item.getId(), item.getName(), item.getDescription(), item.getAvailable(), lastBooking, nextBooking, comments);
+    public static ItemBookingDto toItemBookingDto(Item item, BookingResponseDto lastBooking,
+                                                  BookingResponseDto nextBooking, List<CommentDto> comments) {
+        return new ItemBookingDto(item.getId(), item.getName(),
+                item.getDescription(), item.getAvailable(), lastBooking, nextBooking, comments);
     }
 
     public static CommentDto toCommentDto(Comment comment) {
