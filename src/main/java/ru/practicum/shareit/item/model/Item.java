@@ -33,6 +33,14 @@ public class Item {
     private Boolean available;
 
     @ManyToOne
-    @JoinColumn(name = "request_id")
+    @JoinTable(
+            name = "item_requests",
+            joinColumns = @JoinColumn(
+                    name = "item_id", referencedColumnName = "id"
+            ),
+            inverseJoinColumns = @JoinColumn(
+                    name = "request_id", referencedColumnName = "id"
+            )
+    )
     private ItemRequest itemRequest;
 }
