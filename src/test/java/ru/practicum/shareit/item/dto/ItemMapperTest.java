@@ -7,6 +7,7 @@ import ru.practicum.shareit.booking.model.Status;
 import ru.practicum.shareit.item.model.Comment;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.request.model.ItemRequest;
+import ru.practicum.shareit.user.dto.UserDto;
 import ru.practicum.shareit.user.model.User;
 
 import java.time.LocalDateTime;
@@ -47,11 +48,12 @@ class ItemMapperTest {
         item = new Item(1, owner, "itemOne", "DescOne", true, request);
         comment = new Comment(1, "text", author, item, LocalDateTime.now().withNano(123456789));
         itemDto = new ItemDto(1, "itemOne", "DescOne", true, 1);
+        UserDto userDto = new UserDto(2, "2", "2");
         commentDto = new CommentDto(1, "2", "text", LocalDateTime.now().withNano(123456789));
         lastBooking = new BookingResponseDto(1, 1, LocalDateTime.now().minusHours(1), LocalDateTime.now(),
-                item, author, Status.APPROVED);
+                itemDto, userDto, Status.APPROVED);
         nextBooking = new BookingResponseDto(2, 1, LocalDateTime.now().minusHours(1), LocalDateTime.now(),
-                item, author, Status.APPROVED);
+                itemDto, userDto, Status.APPROVED);
         itemBookingDto = new ItemBookingDto(1, "itemOne", "DescOne", true, lastBooking, nextBooking,
                 List.of(commentDto));
     }

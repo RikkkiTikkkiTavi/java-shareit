@@ -13,10 +13,10 @@ import ru.practicum.shareit.item.dto.ItemBookingDto;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.dto.ItemMapper;
 import ru.practicum.shareit.item.exception.ItemNotFoundException;
+import ru.practicum.shareit.item.exception.ItemValidationException;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.repository.CommentRepository;
 import ru.practicum.shareit.item.repository.ItemRepository;
-import ru.practicum.shareit.item.validator.ItemValidator;
 import ru.practicum.shareit.request.model.ItemRequest;
 import ru.practicum.shareit.request.repository.RequestRepository;
 import ru.practicum.shareit.user.exception.UserNotFoundException;
@@ -43,7 +43,6 @@ public class ItemServiceImpl implements ItemService {
 
     @Transactional
     public ItemDto addNewItem(long userId, ItemDto itemDto) {
-        ItemValidator.checkItem(itemDto);
         User owner = userRepository.findById(userId)
                 .orElseThrow(() -> new ItemNotFoundException("Пользователь с данным id не зарегистрирован"));
         ItemRequest itemRequest = null;
@@ -58,7 +57,9 @@ public class ItemServiceImpl implements ItemService {
     @Transactional
     public ItemDto editItem(long userId, long itemId, ItemDto item) {
         Item oldItem = itemRepository.findById(itemId).orElseThrow();
-        ItemValidator.checkOwner(oldItem, userId);
+        if (oldItem.getOwner().getId() != userId) {
+            throw new ItemNotFoundException("Редактировать данные вещи может только ее владелец");
+        }
         if (item.getName() != null) {
             oldItem.setName(item.getName());
         }
@@ -100,7 +101,17 @@ public class ItemServiceImpl implements ItemService {
     public CommentDto addComment(long userId, long itemId, CommentDto commentDto) {
         Item item = itemRepository.findById(itemId).orElseThrow(() -> new ItemNotFoundException("Предмет не найден"));
         User user = userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException("Пользователя нет"));
-        ItemValidator.checkComment(commentDto, bookingRepository.findFirstByItemAndBooker(item, user));
+        Booking booking = bookingRepository.findFirstByItemAndBooker(item, user);
+        if (commentDto.getText().isEmpty()) {
+            throw new ItemValidationException("Комментарий не может быть пустым");
+        }
+        if (booking == null) {
+            throw new ItemValidationException("Пользователь не арендовал предмет");
+        } else if (booking.getStatus().equals(Status.REJECTED)) {
+            throw new ItemValidationException("Пользователь не арендовал предмет");
+        } else if (booking.getEnd().isAfter(LocalDateTime.now())) {
+            throw new ItemValidationException("Пользователь еще не завершил аренду");
+        }
         return ItemMapper.toCommentDto(commentRepository.save(ItemMapper.toComment(commentDto, item, user)));
     }
 

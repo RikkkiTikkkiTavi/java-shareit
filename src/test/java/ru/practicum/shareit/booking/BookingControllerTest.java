@@ -16,8 +16,8 @@ import ru.practicum.shareit.booking.exception.BookingValidateException;
 import ru.practicum.shareit.booking.exception.UnsupportedStateException;
 import ru.practicum.shareit.booking.model.Status;
 import ru.practicum.shareit.booking.service.BookingService;
-import ru.practicum.shareit.item.model.Item;
-import ru.practicum.shareit.user.model.User;
+import ru.practicum.shareit.item.dto.ItemDto;
+import ru.practicum.shareit.user.dto.UserDto;
 
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
@@ -46,10 +46,8 @@ class BookingControllerTest {
 
     @BeforeEach
     void setUp() {
-        Item item = new Item();
-        User booker = new User();
-        booker.setId(1);
-        item.setId(1);
+        ItemDto item = new ItemDto(1, null, null, null, 0);
+        UserDto booker = new UserDto(1, null, null);
         responseDto = new BookingResponseDto(1, 1, LocalDateTime.of(2010, 1, 1, 1, 1, 1),
                 LocalDateTime.of(2030, 1, 1, 1, 10, 1), item, booker, Status.WAITING);
         requestDto = new BookingRequestDto(1, LocalDateTime.of(2010, 1, 1, 1, 1, 1),
@@ -58,8 +56,9 @@ class BookingControllerTest {
 
     @Test
     void addBooking() throws Exception {
+        requestDto = new BookingRequestDto(1, LocalDateTime.of(2027, 1, 1, 1, 1, 1),
+                LocalDateTime.of(2030, 1, 1, 1, 10, 1));
         when(bookingService.addBooking(1, requestDto)).thenReturn(responseDto);
-
         mvc.perform(post("/bookings")
                         .content(mapper.writeValueAsString(requestDto))
                         .characterEncoding(StandardCharsets.UTF_8)

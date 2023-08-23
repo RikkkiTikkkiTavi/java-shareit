@@ -11,7 +11,6 @@ import ru.practicum.shareit.request.dto.ItemRequestDto;
 import ru.practicum.shareit.request.dto.ItemRequestMapper;
 import ru.practicum.shareit.request.model.ItemRequest;
 import ru.practicum.shareit.request.repository.RequestRepository;
-import ru.practicum.shareit.request.validator.RequestValidator;
 import ru.practicum.shareit.user.exception.UserNotFoundException;
 import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.repository.UserRepository;
@@ -30,8 +29,6 @@ public class RequestServiceImpl implements RequestService {
 
     @Transactional
     public ItemRequestDto addRequest(long userId, ItemRequestDto itemRequestDto) {
-
-        RequestValidator.checkDescription(itemRequestDto);
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new UserNotFoundException("Пользователь не найден"));
         return ItemRequestMapper.toItemRequestDto(requestRepository
@@ -45,7 +42,6 @@ public class RequestServiceImpl implements RequestService {
     }
 
     public List<ItemRequestDto> getNotOwnerRequests(long userId, int from, int size) {
-        RequestValidator.checkFromAndSize(from, size);
         PageRequest request = PageRequest.of(from, size, Sort.by(Sort.Direction.DESC, "created"));
         Page<ItemRequest> page = requestRepository.findByRequestor_IdNot(userId, request);
         return page.stream().map(ItemRequestMapper::toItemRequestDto).collect(Collectors.toList());

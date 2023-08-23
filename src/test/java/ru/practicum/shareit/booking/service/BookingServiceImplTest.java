@@ -18,10 +18,12 @@ import ru.practicum.shareit.booking.exception.UnsupportedStateException;
 import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.booking.model.Status;
 import ru.practicum.shareit.booking.repository.BookingRepository;
+import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.exception.ItemNotFoundException;
 import ru.practicum.shareit.item.exception.ItemValidationException;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.repository.ItemRepository;
+import ru.practicum.shareit.user.dto.UserDto;
 import ru.practicum.shareit.user.exception.UserNotFoundException;
 import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.repository.UserRepository;
@@ -55,6 +57,8 @@ class BookingServiceImplTest {
     private User owner;
     private User booker;
     private Item itemOne;
+    private ItemDto itemDto;
+    private UserDto userDto;
     private Booking bookingOne;
     private Booking bookingTwo;
     private BookingRequestDto bookingRequestDto;
@@ -64,6 +68,8 @@ class BookingServiceImplTest {
         owner = new User(1, "userOne", "email@One.com");
         booker = new User(3, "userTwo", "email@Two.com");
         itemOne = new Item(1, owner, "Item1", "Desc1", true, null);
+        itemDto = new ItemDto(1, "Item1", "Desc1", true, 0);
+        userDto = new UserDto(3, "userTwo", "email@Two.com");
         bookingOne = new Booking(1, LocalDateTime.of(2030, 1, 1, 1, 1, 1),
                 LocalDateTime.of(2030, 1, 1, 1, 1, 10), itemOne, booker,
                 Status.WAITING);
@@ -135,12 +141,12 @@ class BookingServiceImplTest {
         when(userRepository.findById(anyLong())).thenReturn(Optional.ofNullable(booker));
         when(bookingRepository.findById(anyLong())).thenReturn(Optional.ofNullable(bookingOne));
         BookingResponseDto rejectedBooking = new BookingResponseDto(1, 3, LocalDateTime.of(2030, 1, 1, 1, 1, 1),
-                LocalDateTime.of(2030, 1, 1, 1, 1, 10), itemOne, booker,
+                LocalDateTime.of(2030, 1, 1, 1, 1, 10), itemDto, userDto,
                 Status.REJECTED);
         assertEquals(rejectedBooking, bookingService.approveBooking(1, 1, false));
 
         BookingResponseDto approvedBooking = new BookingResponseDto(1, 3, LocalDateTime.of(2030, 1, 1, 1, 1, 1),
-                LocalDateTime.of(2030, 1, 1, 1, 1, 10), itemOne, booker,
+                LocalDateTime.of(2030, 1, 1, 1, 1, 10), itemDto, userDto,
                 Status.APPROVED);
         assertEquals(approvedBooking, bookingService.approveBooking(1, 1, true));
     }

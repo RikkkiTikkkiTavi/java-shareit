@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.request.dto.ItemRequestDto;
 import ru.practicum.shareit.request.service.RequestService;
+import ru.practicum.shareit.request.validator.RequestValidator;
 
 import java.util.List;
 
@@ -16,8 +17,9 @@ public class ItemRequestController {
 
     @PostMapping
     public ItemRequestDto add(@RequestHeader("X-Sharer-User-Id") long userId,
-                              @RequestBody ItemRequestDto itemRequest) {
-        return requestService.addRequest(userId, itemRequest);
+                              @RequestBody ItemRequestDto itemRequestDto) {
+        RequestValidator.checkDescription(itemRequestDto);
+        return requestService.addRequest(userId, itemRequestDto);
     }
 
     @GetMapping
@@ -26,9 +28,10 @@ public class ItemRequestController {
     }
 
     @GetMapping("/all")
-    public List<ItemRequestDto> getNoOwnerRequests(@RequestHeader("X-Sharer-User-Id") long userId,
-                                                   @RequestParam(defaultValue = "0") int from,
-                                                   @RequestParam(defaultValue = "10") int size) {
+    public List<ItemRequestDto> getNotOwnerRequests(@RequestHeader("X-Sharer-User-Id") long userId,
+                                                    @RequestParam(defaultValue = "0") int from,
+                                                    @RequestParam(defaultValue = "10") int size) {
+        RequestValidator.checkFromAndSize(from, size);
         return requestService.getNotOwnerRequests(userId, from, size);
     }
 

@@ -2,7 +2,9 @@ package ru.practicum.shareit.booking.dto;
 
 import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.booking.model.Status;
+import ru.practicum.shareit.item.dto.ItemMapper;
 import ru.practicum.shareit.item.model.Item;
+import ru.practicum.shareit.user.dto.UserMapper;
 import ru.practicum.shareit.user.model.User;
 
 import java.util.List;
@@ -11,7 +13,8 @@ import java.util.stream.Collectors;
 public class BookingMapper {
     public static BookingResponseDto toBookingResponseDto(Booking booking) {
         return new BookingResponseDto(booking.getId(), booking.getBooker().getId(), booking.getStart(),
-                booking.getEnd(), booking.getItem(), booking.getBooker(), booking.getStatus());
+                booking.getEnd(), ItemMapper.toItemDto(booking.getItem()), UserMapper.toUserDto(booking.getBooker()),
+                booking.getStatus());
     }
 
     public static Booking toBooking(BookingRequestDto bookingRequestDto, Item item, User booker, Status status) {

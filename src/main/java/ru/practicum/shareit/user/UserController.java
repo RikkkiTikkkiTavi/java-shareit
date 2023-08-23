@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.user.dto.UserDto;
 import ru.practicum.shareit.user.service.UserService;
+import ru.practicum.shareit.user.validator.UserValidator;
 
 import java.util.List;
 
@@ -25,8 +26,9 @@ public class UserController {
     }
 
     @PostMapping
-    public UserDto create(@RequestBody UserDto user) {
-        return service.create(user);
+    public UserDto create(@RequestBody UserDto userDto) {
+        UserValidator.checkEmail(userDto);
+        return service.create(userDto);
     }
 
     @PatchMapping("/{userId}")

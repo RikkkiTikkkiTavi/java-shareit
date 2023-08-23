@@ -8,7 +8,6 @@ import ru.practicum.shareit.user.dto.UserDto;
 import ru.practicum.shareit.user.dto.UserMapper;
 import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.repository.UserRepository;
-import ru.practicum.shareit.user.validator.UserValidator;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -32,7 +31,6 @@ public class UserServiceImpl implements UserService {
 
     @Transactional
     public UserDto create(UserDto userDto) {
-        UserValidator.checkEmail(userDto);
         User user = UserMapper.toUser(userDto);
         return UserMapper.toUserDto(userRepository.save(user));
     }

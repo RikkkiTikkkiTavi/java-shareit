@@ -2,8 +2,6 @@ package ru.practicum.shareit.booking.validator;
 
 import ru.practicum.shareit.booking.dto.BookingRequestDto;
 import ru.practicum.shareit.booking.exception.BookingValidateException;
-import ru.practicum.shareit.booking.model.Booking;
-import ru.practicum.shareit.user.exception.UserNotFoundException;
 
 import java.time.LocalDateTime;
 
@@ -29,12 +27,6 @@ public class BookingValidator {
 
         if (booking.getStart().isBefore(LocalDateTime.now())) {
             throw new BookingValidateException("Старт аренды должен быть в будущем");
-        }
-    }
-
-    public static void validateUserId(long userId, Booking booking) {
-        if (booking.getBooker().getId() != userId && booking.getItem().getOwner().getId() != userId) {
-            throw new UserNotFoundException("Вы не автор бронирования и не владелец вещи");
         }
     }
 

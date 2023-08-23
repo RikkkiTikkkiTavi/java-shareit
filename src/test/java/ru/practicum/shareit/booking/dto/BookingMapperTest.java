@@ -4,7 +4,9 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.booking.model.Status;
+import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.model.Item;
+import ru.practicum.shareit.user.dto.UserDto;
 import ru.practicum.shareit.user.model.User;
 
 import java.time.LocalDateTime;
@@ -25,10 +27,12 @@ class BookingMapperTest {
         booker = new User(1, "Booker", "booker@mail.ru");
         User owner = new User(2, "Owner", "owner@mail.ru");
         item = new Item(1, owner, "itemOne", "descriptionOne", true, null);
+        ItemDto itemDto = new ItemDto(1, "itemOne", "descriptionOne", true, 0);
+        UserDto userDto = new UserDto(1, "Booker", "booker@mail.ru");
         LocalDateTime start = LocalDateTime.of(2000, 1, 1, 1, 1, 1);
         LocalDateTime end = LocalDateTime.of(2001, 1, 1, 1, 1, 1);
         booking = new Booking(0, start, end, item, booker, Status.APPROVED);
-        bookingResponseDto = new BookingResponseDto(0, 1, start, end, item, booker, Status.APPROVED);
+        bookingResponseDto = new BookingResponseDto(0, 1, start, end, itemDto, userDto, Status.APPROVED);
         bookingRequestDto = new BookingRequestDto(1, start, end);
     }
 

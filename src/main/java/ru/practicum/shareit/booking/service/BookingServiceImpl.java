@@ -4,9 +4,9 @@ import lombok.AllArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import ru.practicum.shareit.booking.dto.BookingMapper;
 import ru.practicum.shareit.booking.dto.BookingRequestDto;
 import ru.practicum.shareit.booking.dto.BookingResponseDto;
-import ru.practicum.shareit.booking.dto.BookingMapper;
 import ru.practicum.shareit.booking.exception.BookingNotFoundException;
 import ru.practicum.shareit.booking.exception.BookingValidateException;
 import ru.practicum.shareit.booking.exception.UnsupportedStateException;
@@ -14,14 +14,12 @@ import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.booking.model.State;
 import ru.practicum.shareit.booking.model.Status;
 import ru.practicum.shareit.booking.repository.BookingRepository;
-import ru.practicum.shareit.booking.validator.BookingValidator;
 import ru.practicum.shareit.item.exception.ItemNotFoundException;
 import ru.practicum.shareit.item.exception.ItemValidationException;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.repository.ItemRepository;
 import ru.practicum.shareit.user.exception.UserNotFoundException;
 import ru.practicum.shareit.user.repository.UserRepository;
-
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -39,13 +37,14 @@ public class BookingServiceImpl implements BookingService {
         Booking booking = bookingRepository.findById(bookingId)
                 .orElseThrow(() -> new BookingNotFoundException("Бронирование не найдено"));
         userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException("Пользователь не найден"));
-        BookingValidator.validateUserId(userId, booking);
+        if (booking.getBooker().getId() != userId && booking.getItem().getOwner().getId() != userId) {
+            throw new UserNotFoundException("Вы не автор бронирования и не владелец вещи");
+        }
         return BookingMapper.toBookingResponseDto(booking);
     }
 
     @Transactional
     public BookingResponseDto addBooking(long userId, BookingRequestDto bookingRequestDto) {
-        BookingValidator.checkTime(bookingRequestDto);
         Item item = itemRepository.findById(bookingRequestDto.getItemId())
                 .orElseThrow(() -> new ItemNotFoundException("Предмет не найден"));
         if (!item.getAvailable()) {
@@ -85,7 +84,6 @@ public class BookingServiceImpl implements BookingService {
 
         switch (toState(state)) {
             case ALL:
-                BookingValidator.checkFromAndSize(from, size);
                 long count = bookingRepository.countByBooker_Id(bookerId);
                 if (size > count - from) {
                     size = (int) (count - from);
@@ -119,7 +117,6 @@ public class BookingServiceImpl implements BookingService {
 
         switch (toState(state)) {
             case ALL:
-                BookingValidator.checkFromAndSize(from, size);
                 long count = bookingRepository.countByItem_Owner_Id(ownerId);
                 if (size > count - from) {
                     size = (int) (count - from);

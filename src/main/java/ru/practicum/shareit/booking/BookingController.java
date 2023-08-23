@@ -5,6 +5,7 @@ import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.booking.dto.BookingRequestDto;
 import ru.practicum.shareit.booking.dto.BookingResponseDto;
 import ru.practicum.shareit.booking.service.BookingService;
+import ru.practicum.shareit.booking.validator.BookingValidator;
 
 import java.util.List;
 
@@ -17,8 +18,9 @@ public class BookingController {
 
     @PostMapping
     public BookingResponseDto add(@RequestHeader("X-Sharer-User-Id") long userId,
-                                  @RequestBody BookingRequestDto booking) {
-        return bookingService.addBooking(userId, booking);
+                                  @RequestBody BookingRequestDto bookingRequestDto) {
+        BookingValidator.checkTime(bookingRequestDto);
+        return bookingService.addBooking(userId, bookingRequestDto);
     }
 
     @PatchMapping("/{bookingId}")
@@ -39,6 +41,7 @@ public class BookingController {
                                                         @RequestParam(defaultValue = "ALL") String state,
                                                         @RequestParam(defaultValue = "0") int from,
                                                         @RequestParam(defaultValue = "10") int size) {
+        BookingValidator.checkFromAndSize(from, size);
         return bookingService.getBookingsByBooker(bookerId, state, from, size);
     }
 
@@ -47,7 +50,7 @@ public class BookingController {
                                                        @RequestParam(defaultValue = "ALL") String state,
                                                        @RequestParam(defaultValue = "0") int from,
                                                        @RequestParam(defaultValue = "10") int size) {
-
+        BookingValidator.checkFromAndSize(from, size);
         return bookingService.getBookingsByOwner(ownerId, state, from, size);
     }
 }
