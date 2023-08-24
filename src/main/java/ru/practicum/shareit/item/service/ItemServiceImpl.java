@@ -55,7 +55,7 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Transactional
-    public ItemDto editItem(long userId, long itemId, ItemDto item) {
+    public ItemDto editItem(long itemId, long userId, ItemDto item) {
         Item oldItem = itemRepository.findById(itemId).orElseThrow();
         if (oldItem.getOwner().getId() != userId) {
             throw new ItemNotFoundException("Редактировать данные вещи может только ее владелец");
