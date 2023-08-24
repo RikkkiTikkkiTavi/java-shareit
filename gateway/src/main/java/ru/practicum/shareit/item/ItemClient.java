@@ -37,7 +37,12 @@ public class ItemClient extends BaseClient {
         return get("/" + itemId, userId);
     }
 
-    public ResponseEntity<Object> getUserItems(long userId, ) {
-        return get("/" + bookingId, userId);
+    public ResponseEntity<Object> getUserItems(long userId) {
+        return get("", userId);
+    }
+
+    public ResponseEntity<Object> searchItems(long userId, String text) {
+
+        return get("/search")
     }
 }
