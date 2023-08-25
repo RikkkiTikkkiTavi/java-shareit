@@ -1,14 +1,14 @@
 package ru.practicum.shareit.booking.validator;
 
 
-import ru.practicum.shareit.booking.dto.BookItemRequestDto;
+import ru.practicum.shareit.booking.dto.BookingRequestDto;
 import ru.practicum.shareit.booking.exception.BookingValidateException;
 
 import java.time.LocalDateTime;
 
 public class BookingValidator {
 
-    public static void checkTime(BookItemRequestDto booking) {
+    public static void checkTime(BookingRequestDto booking) {
 
         if (booking.getEnd() == null || booking.getStart() == null) {
             throw new BookingValidateException("Старт и конец не могут быть равны null");
