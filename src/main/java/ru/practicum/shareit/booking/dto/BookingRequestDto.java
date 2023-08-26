@@ -1,19 +1,16 @@
 package ru.practicum.shareit.booking.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.Value;
 
 import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 
-@Data
-@AllArgsConstructor
+@Value
 public class BookingRequestDto {
 
-    private long itemId;
+    long itemId;
 
-    private LocalDateTime start;
+    LocalDateTime start;
 
-    @NotNull(message = "Время завершения бронирования не может быть null")
-    private LocalDateTime end;
+    @NotNull(message = "Время завершения бронирования не может быть null") LocalDateTime end;
 }

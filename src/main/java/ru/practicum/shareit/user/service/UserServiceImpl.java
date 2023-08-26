@@ -31,13 +31,14 @@ public class UserServiceImpl implements UserService {
     }
 
     @Transactional
-    public UserDto create(User user) {
-        UserValidator.checkEmail(user);
+    public UserDto create(UserDto userDto) {
+        UserValidator.checkEmail(userDto);
+        User user = UserMapper.toUser(userDto);
         return UserMapper.toUserDto(userRepository.save(user));
     }
 
     @Transactional
-    public UserDto update(User user, long id) {
+    public UserDto update(UserDto user, long id) {
         User userOld = userRepository.findById(id).orElseThrow();
         if (user.getName() != null) {
             userOld.setName(user.getName());

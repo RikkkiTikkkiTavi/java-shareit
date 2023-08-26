@@ -3,10 +3,10 @@ package ru.practicum.shareit.item.validator;
 import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.booking.model.Status;
 import ru.practicum.shareit.item.dto.CommentDto;
+import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.exception.ItemNotFoundException;
 import ru.practicum.shareit.item.exception.ItemValidationException;
 import ru.practicum.shareit.item.model.Item;
-import ru.practicum.shareit.item.repository.ItemRepository;
 
 import java.time.LocalDateTime;
 
@@ -18,15 +18,7 @@ public class ItemValidator {
         }
     }
 
-    public static void checkAvailable(ItemRepository itemRepository, long itemId) {
-        Item item = itemRepository.findById(itemId)
-                .orElseThrow(() -> new ItemNotFoundException("Предмет не существует"));
-        if (!item.getAvailable()) {
-            throw new ItemValidationException("Предмет не доступен");
-        }
-    }
-
-    public static void checkItem(Item item) {
+    public static void checkItem(ItemDto item) {
         if (item.getAvailable() == null) {
             throw new ItemValidationException("У предметы должен быть статус");
         }

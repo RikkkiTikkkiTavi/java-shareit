@@ -5,8 +5,7 @@ import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.item.dto.CommentDto;
 import ru.practicum.shareit.item.dto.ItemBookingDto;
 import ru.practicum.shareit.item.dto.ItemDto;
-import ru.practicum.shareit.item.model.Item;
-import ru.practicum.shareit.item.service.ItemServiceImpl;
+import ru.practicum.shareit.item.service.ItemService;
 
 import java.util.List;
 
@@ -15,19 +14,19 @@ import java.util.List;
 @AllArgsConstructor
 public class ItemController {
 
-    ItemServiceImpl itemService;
+    private ItemService itemService;
 
     @PostMapping
     public ItemDto add(@RequestHeader("X-Sharer-User-Id") long userId,
-                       @RequestBody Item item) {
+                       @RequestBody ItemDto item) {
         return itemService.addNewItem(userId, item);
     }
 
     @PatchMapping("/{itemId}")
     public ItemDto editItem(@RequestHeader("X-Sharer-User-Id") long userId,
-                            @PathVariable("itemId") long id,
-                            @RequestBody Item item) {
-        return itemService.editItem(userId, id, item);
+                            @PathVariable("itemId") long itemId,
+                            @RequestBody ItemDto item) {
+        return itemService.editItem(userId, itemId, item);
     }
 
     @GetMapping("/{itemId}")
