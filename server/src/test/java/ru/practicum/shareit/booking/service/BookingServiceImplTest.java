@@ -13,14 +13,14 @@ import ru.practicum.shareit.booking.dto.BookingMapper;
 import ru.practicum.shareit.booking.dto.BookingRequestDto;
 import ru.practicum.shareit.booking.dto.BookingResponseDto;
 import ru.practicum.shareit.booking.exception.BookingNotFoundException;
-import ru.practicum.shareit.booking.exception.BookingValidateException;
+import ru.practicum.shareit.booking.exception.BookingStatusException;
 import ru.practicum.shareit.booking.exception.UnsupportedStateException;
 import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.booking.model.Status;
 import ru.practicum.shareit.booking.repository.BookingRepository;
 import ru.practicum.shareit.item.dto.ItemDto;
+import ru.practicum.shareit.item.exception.ItemAvailableException;
 import ru.practicum.shareit.item.exception.ItemNotFoundException;
-import ru.practicum.shareit.item.exception.ItemValidationException;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.repository.ItemRepository;
 import ru.practicum.shareit.user.dto.UserDto;
@@ -127,7 +127,7 @@ class BookingServiceImplTest {
     void addBookingThrowExceptionByNotAvailableItem() {
         itemOne.setAvailable(false);
         when(itemRepository.findById(anyLong())).thenReturn(Optional.ofNullable(itemOne));
-        assertThrows(ItemValidationException.class, () -> bookingService.addBooking(5, bookingRequestDto));
+        assertThrows(ItemAvailableException.class, () -> bookingService.addBooking(5, bookingRequestDto));
     }
 
     @Test
@@ -170,7 +170,7 @@ class BookingServiceImplTest {
         when(userRepository.findById(anyLong())).thenReturn(Optional.ofNullable(booker));
         when(bookingRepository.findById(anyLong())).thenReturn(Optional.ofNullable(bookingOne));
         bookingOne.setStatus(Status.APPROVED);
-        assertThrows(BookingValidateException.class,
+        assertThrows(BookingStatusException.class,
                 () -> bookingService.approveBooking(1, 1, true));
     }
 
