@@ -13,7 +13,7 @@ import ru.practicum.shareit.item.dto.ItemBookingDto;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.dto.ItemMapper;
 import ru.practicum.shareit.item.exception.ItemNotFoundException;
-import ru.practicum.shareit.item.exception.ItemValidationException;
+import ru.practicum.shareit.item.exception.ItemRentException;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.repository.CommentRepository;
 import ru.practicum.shareit.item.repository.ItemRepository;
@@ -102,15 +102,12 @@ public class ItemServiceImpl implements ItemService {
         Item item = itemRepository.findById(itemId).orElseThrow(() -> new ItemNotFoundException("Предмет не найден"));
         User user = userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException("Пользователя нет"));
         Booking booking = bookingRepository.findFirstByItemAndBooker(item, user);
-        if (commentDto.getText().isEmpty()) {
-            throw new ItemValidationException("Комментарий не может быть пустым");
-        }
         if (booking == null) {
-            throw new ItemValidationException("Пользователь не арендовал предмет");
+            throw new ItemRentException("Пользователь не арендовал предмет");
         } else if (booking.getStatus().equals(Status.REJECTED)) {
-            throw new ItemValidationException("Пользователь не арендовал предмет");
+            throw new ItemRentException("Пользователь не арендовал предмет");
         } else if (booking.getEnd().isAfter(LocalDateTime.now())) {
-            throw new ItemValidationException("Пользователь еще не завершил аренду");
+            throw new ItemRentException("Пользователь еще не завершил аренду");
         }
         return ItemMapper.toCommentDto(commentRepository.save(ItemMapper.toComment(commentDto, item, user)));
     }
