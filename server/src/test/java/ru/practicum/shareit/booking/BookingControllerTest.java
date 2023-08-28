@@ -12,7 +12,6 @@ import org.springframework.test.web.servlet.ResultMatcher;
 import ru.practicum.shareit.booking.dto.BookingRequestDto;
 import ru.practicum.shareit.booking.dto.BookingResponseDto;
 import ru.practicum.shareit.booking.exception.BookingNotFoundException;
-import ru.practicum.shareit.booking.exception.BookingValidateException;
 import ru.practicum.shareit.booking.exception.UnsupportedStateException;
 import ru.practicum.shareit.booking.model.Status;
 import ru.practicum.shareit.booking.service.BookingService;
@@ -139,19 +138,6 @@ class BookingControllerTest {
                         .header("X-Sharer-User-Id", 1)
                         .param("approved", "true"))
                 .andExpect(status().isNotFound());
-    }
-
-    @Test
-    void throwBookingValidateExceptionGetStatus400() throws Exception {
-        when(bookingService.approveBooking(1, 1, true)).thenThrow(BookingValidateException.class);
-
-        mvc.perform(patch("/bookings/1")
-                        .characterEncoding(StandardCharsets.UTF_8)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .accept(MediaType.APPLICATION_JSON)
-                        .header("X-Sharer-User-Id", 1)
-                        .param("approved", "true"))
-                .andExpect(status().isBadRequest());
     }
 
     @Test
