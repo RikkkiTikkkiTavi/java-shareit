@@ -14,7 +14,6 @@ import ru.practicum.shareit.booking.dto.BookingRequestDto;
 import ru.practicum.shareit.booking.dto.BookingResponseDto;
 import ru.practicum.shareit.booking.exception.BookingNotFoundException;
 import ru.practicum.shareit.booking.exception.BookingStatusException;
-import ru.practicum.shareit.booking.exception.UnsupportedStateException;
 import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.booking.model.Status;
 import ru.practicum.shareit.booking.repository.BookingRepository;
@@ -240,13 +239,6 @@ class BookingServiceImplTest {
     }
 
     @Test
-    void getBookingByBookerThrowExceptionUnknownState() {
-        when(userRepository.findById(anyLong())).thenReturn(Optional.ofNullable(booker));
-        assertThrows(UnsupportedStateException.class,
-                () -> bookingService.getBookingsByBooker(3, "UNKNOWN", 0, 10));
-    }
-
-    @Test
     void getBookingsByOwnerThrowExceptionByNotExistBooker() {
         when(userRepository.findById(anyLong())).thenThrow(UserNotFoundException.class);
         assertThrows(UserNotFoundException.class,
@@ -301,12 +293,5 @@ class BookingServiceImplTest {
                 bookingService.getBookingsByOwner(3, "WAITING", 0, 10));
         assertEquals(BookingMapper.toBookingsResponseDto(List.of(bookingOne)),
                 bookingService.getBookingsByOwner(3, "REJECTED", 0, 10));
-    }
-
-    @Test
-    void getBookingByOwnerThrowExceptionUnknownState() {
-        when(userRepository.findById(anyLong())).thenReturn(Optional.ofNullable(booker));
-        assertThrows(UnsupportedStateException.class,
-                () -> bookingService.getBookingsByOwner(3, "UNKNOWN", 0, 10));
     }
 }
