@@ -8,14 +8,14 @@ import ru.practicum.shareit.booking.dto.BookingMapper;
 import ru.practicum.shareit.booking.dto.BookingRequestDto;
 import ru.practicum.shareit.booking.dto.BookingResponseDto;
 import ru.practicum.shareit.booking.exception.BookingNotFoundException;
-import ru.practicum.shareit.booking.exception.BookingValidateException;
+import ru.practicum.shareit.booking.exception.BookingStatusException;
 import ru.practicum.shareit.booking.exception.UnsupportedStateException;
 import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.booking.model.State;
 import ru.practicum.shareit.booking.model.Status;
 import ru.practicum.shareit.booking.repository.BookingRepository;
+import ru.practicum.shareit.item.exception.ItemAvailableException;
 import ru.practicum.shareit.item.exception.ItemNotFoundException;
-import ru.practicum.shareit.item.exception.ItemValidationException;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.repository.ItemRepository;
 import ru.practicum.shareit.user.exception.UserNotFoundException;
@@ -48,7 +48,7 @@ public class BookingServiceImpl implements BookingService {
         Item item = itemRepository.findById(bookingRequestDto.getItemId())
                 .orElseThrow(() -> new ItemNotFoundException("Предмет не найден"));
         if (!item.getAvailable()) {
-            throw new ItemValidationException("Предмет не доступен");
+            throw new ItemAvailableException("Предмет не доступен");
         }
         if (item.getOwner().getId() == userId) {
             throw new UserNotFoundException("Вещь не может забронировать её владелец");
@@ -67,7 +67,7 @@ public class BookingServiceImpl implements BookingService {
         if (booking.getItem().getOwner().getId() == userId) {
             if (approved) {
                 if (booking.getStatus().equals(Status.APPROVED)) {
-                    throw new BookingValidateException("Бронирование уже подтверждено");
+                    throw new BookingStatusException("Бронирование уже подтверждено");
                 }
                 booking.setStatus(Status.APPROVED);
             } else {
@@ -82,7 +82,7 @@ public class BookingServiceImpl implements BookingService {
     public List<BookingResponseDto> getBookingsByBooker(long bookerId, String state, int from, int size) {
         userRepository.findById(bookerId).orElseThrow(() -> new UserNotFoundException("Пользователь не найден"));
 
-        switch (toState(state)) {
+        switch (State.valueOf(state)) {
             case ALL:
                 long count = bookingRepository.countByBooker_Id(bookerId);
                 if (size > count - from) {
@@ -115,7 +115,7 @@ public class BookingServiceImpl implements BookingService {
     public List<BookingResponseDto> getBookingsByOwner(long ownerId, String state, int from, int size) {
         userRepository.findById(ownerId).orElseThrow(() -> new UserNotFoundException("Пользователь не найден"));
 
-        switch (toState(state)) {
+        switch (State.valueOf(state)) {
             case ALL:
                 long count = bookingRepository.countByItem_Owner_Id(ownerId);
                 if (size > count - from) {
@@ -142,14 +142,6 @@ public class BookingServiceImpl implements BookingService {
                         .findAllByItem_Owner_IdAndStatusEquals(ownerId, Status.REJECTED));
             default:
                 throw new UnsupportedStateException("Unknown state: " + state);
-        }
-    }
-
-    private State toState(String state) {
-        try {
-            return State.valueOf(state);
-        } catch (IllegalArgumentException e) {
-            throw new UnsupportedStateException("Unknown state: " + state);
         }
     }
 }
