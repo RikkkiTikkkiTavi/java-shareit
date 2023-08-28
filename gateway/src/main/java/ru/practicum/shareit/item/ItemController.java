@@ -59,6 +59,7 @@ public class ItemController {
     public ResponseEntity<Object> addComment(@RequestHeader("X-Sharer-User-Id") long userId,
                                              @PathVariable("itemId") long itemId,
                                              @RequestBody CommentDto comment) {
+        ItemValidator.checkComment(comment);
         log.info("Add comment {} for itemId={} by userId={}", comment, itemId, userId);
         return itemClient.addComment(userId, itemId, comment);
     }
