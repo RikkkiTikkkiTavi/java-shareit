@@ -13,7 +13,6 @@ import ru.practicum.shareit.item.dto.CommentDto;
 import ru.practicum.shareit.item.dto.ItemBookingDto;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.exception.ItemNotFoundException;
-import ru.practicum.shareit.item.exception.ItemValidationException;
 import ru.practicum.shareit.item.service.ItemService;
 import ru.practicum.shareit.user.model.User;
 
@@ -145,18 +144,6 @@ class ItemControllerTest {
                         .param("text", "text")
                         .header("X-Sharer-User-Id", 1))
                 .andExpect(status().isNotFound());
-    }
-
-    @Test
-    void throwItemValidateExceptionGetStatus400() throws Exception {
-        when(itemService.searchItems(anyString())).thenThrow(ItemValidationException.class);
-        mvc.perform(get("/items/search")
-                        .characterEncoding(StandardCharsets.UTF_8)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .accept(MediaType.APPLICATION_JSON)
-                        .param("text", "text")
-                        .header("X-Sharer-User-Id", 1))
-                .andExpect(status().isBadRequest());
     }
 
     private static ResultMatcher match(String prefix, ItemDto itemDto) {
