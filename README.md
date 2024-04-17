@@ -1,2 +1,1 @@
-# java-shareit
-Template repository for Shareit project.
+Assistant app for renting things
